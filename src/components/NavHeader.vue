@@ -11,9 +11,10 @@
         <div class="topbar-user">
           <a href="javascript:;" v-if="username">{{username}}</a>
           <a href="javascript:;" v-if="!username" @click="login">登录</a>
+          <a href="javascript:;" v-if="username" @click="logout">退出</a>
           <a href="avascript:;" v-if="username">我的订单</a>
           <a href="avascript:;" class="my-cart" @click="goToCart"><span
-              class="icon-cart"></span>购物车</a>
+              class="icon-cart"></span>购物车({{cartCount}})</a>
         </div>
       </div>
     </div>
@@ -117,13 +118,22 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default {
   name: 'nav-header',
   data() {
     return {
-      username: '',
       phoneList: [],
     };
+  },
+  computed: {
+    /* username() {
+      return this.$store.state.username;
+    },
+    cartCount() {
+      return this.$store.state.cartCount;
+    }, */
+    ...mapState(['username', 'cartCount']),
   },
   filters: {
     currency(val) {
@@ -133,6 +143,10 @@ export default {
   },
   mounted() {
     this.getProductList();
+    let params = this.$route.params;
+    if (params && params.from == 'login') {
+      this.getCartCount();
+    }
   },
   methods: {
     login() {
@@ -151,6 +165,20 @@ export default {
             this.phoneList = res.list.slice(0, 6);
           }
         });
+    },
+    logout() {
+      this.axios.post('/user/logout').then(() => {
+        this.$message.success('退出成功');
+        this.$cookie.set('userId', '', { expires: '-1' });
+        this.$store.dispatch('saveUserName', '');
+        this.$store.dispatch('saveCartCount', '0');
+      });
+    },
+    getCartCount() {
+      this.axios.get('/carts/products/sum').then((res = 0) => {
+        //to-do 保存到vuex里面
+        this.$store.dispatch('saveCartCount', res);
+      });
     },
     goToCart() {
       this.$router.push('/cart');
@@ -195,32 +223,7 @@ export default {
       position: relative;
       height: 112px;
       @include flex();
-      .header-logo {
-        display: inline-block;
-        width: 55px;
-        height: 55px;
-        background-color: #ff6600;
-        a {
-          display: inline-block;
-          width: 110px;
-          height: 55px;
 
-          &:before {
-            content: ' ';
-            @include bgImg(55px, 55px, '/public/imgs/mi-logo.png', 55px);
-
-            transition: margin 0.2s;
-          }
-          &:after {
-            content: ' ';
-            @include bgImg(55px, 55px, '/public/imgs/mi-home.png', 55px);
-          }
-          &:hover::before {
-            margin-left: -55px;
-            transition: margin 0.2s;
-          }
-        }
-      }
       .header-menu {
         display: inline-block;
         width: 643px;
@@ -230,7 +233,6 @@ export default {
           color: #333333;
           font-weight: bold;
           font-size: 16px;
-          line-height: 112px;
           margin-right: 20px;
           span {
             cursor: pointer;

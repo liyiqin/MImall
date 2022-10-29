@@ -38,6 +38,7 @@
   </div>
 </template>
 <script>
+import { mapActions } from 'vuex';
 export default {
   name: 'login',
   data() {
@@ -56,16 +57,24 @@ export default {
           password,
         })
         .then((res) => {
-          this.$cookie.set('userId', res.id, { expires: '1M' });
-          this.$router.push('/index');
+          this.$cookie.set('userId', res.id, { expires: 'Session' });
+          //this.$store.dispatch('saveUserName',res.username);
+          this.saveUserName(res.username);
+          this.$router.push({
+            name: 'index',
+            params: {
+              from: 'login',
+            },
+          });
         });
     },
+    ...mapActions(['saveUserName']),
     register() {
       this.axios
         .post('/user/register', {
-          username: 'adm2134in123',
-          password: 'admin1412',
-          email: 'admin1@163.com',
+          username: 'adm2134in123123',
+          password: 'admin1412asd',
+          email: 'adminasd1@163.com',
         })
         .then(() => {
           alert('注册成功');

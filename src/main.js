@@ -3,7 +3,10 @@ import App from './App.vue'
 import axios from 'axios'
 import router from './router'
 import VueLazyload from 'vue-lazyload'
+import store from './store'
 import VueCookie from 'vue-cookie'
+import { Message } from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
 /* import env from './env' */
 
 //mock开关
@@ -26,21 +29,25 @@ axios.interceptors.response.use(function (response) {
     if (path != '#/index') {
       window.location.href = '/#/login'
     }
-
+    return Promise.reject(res);
   } else {
-    alert(res.msg);
+    Message.warning(res.msg);
     return Promise.reject(res);
   }
 })
 
 Vue.config.productionTip = false
 Vue.prototype.axios = axios
+Vue.prototype.$message = Message
 Vue.use(VueLazyload, {
   loading: '/imgs/loading-svg/loading-bars.svg'
 })
 Vue.use(VueCookie)
 
+
 new Vue({
   router,
+  store,
   render: h => h(App),
 }).$mount('#app')
+
