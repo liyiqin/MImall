@@ -39,7 +39,8 @@
           <div class="item-address">
             <h2 class="addr-title">收货地址</h2>
             <div class="addr-list clearfix">
-              <div class="addr-info" v-for="(item,index) in list" :key="index">
+              <div class="addr-info" :class="{'checked':index == checkIndex}"
+                @click="checkIndex=index" v-for="(item,index) in list" :key="index">
                 <h2>{{item.receiverName}}</h2>
                 <div class="phone">{{item.receiverMobile}}</div>
                 <div class="street">
@@ -115,26 +116,32 @@
         </div>
       </div>
     </div>
-    <modal title="新增确认" btnType="3" :showModal="showEditModal" @submit="submitAddress"
+    <modal title="删除确认" btnType="3" :showModal="showDelModal" @submit="submitAddress"
+      @cancel="showDelModal=false">
+      <template v-slot:body>
+        <p>是否确认删除</p>
+      </template>
+    </modal>
+    <modal title="编辑确认" btnType="3" :showModal="showEditModal" @submit="submitAddress"
       @cancel="showEditModal=false">
       <template v-slot:body>
         <div class="edit-wrap">
           <div class="item">
-            <input type="text" class="input" placeholder="姓名">
-            <input type="text" class="input" placeholder="手机号">
+            <input type="text" class="input" placeholder="姓名" v-model="checkedItem.receiverName">
+            <input type="text" class="input" placeholder="手机号" v-model="checkedItem.receiverMobile">
           </div>
           <div class="item">
-            <select name="province">
+            <select name="province" v-model="checkedItem.receiverProvince">
               <option value="北京">北京</option>
               <option value="天津">天津</option>
               <option value="河北">河北</option>
             </select>
-            <select name="city">
+            <select name="city" v-model="checkedItem.receiverCity">
               <option value="北京">北京</option>
               <option value="天津">天津</option>
               <option value="河北">石家庄</option>
             </select>
-            <select name="district">
+            <select name="district" v-model="checkedItem.receiverDistrict">
               <option value="北京">昌平区</option>
               <option value="天津">海定区</option>
               <option value="河北">东城区</option>
@@ -145,10 +152,10 @@
             </select>
           </div>
           <div class="item">
-            <textarea name="street"></textarea>
+            <textarea name="street" v-model="checkedItem.receiverAddress"></textarea>
           </div>
           <div class="item">
-            <input type="text" class="input" placeholder="邮编">
+            <input type="text" class="input" placeholder="邮编" v-model="checkedItem.receiverZip">
           </div>
         </div>
       </template>
@@ -193,10 +200,10 @@ export default {
       this.checkedItem = {};
       this.showEditModal = true;
     },
-    // 打开新增地址弹框
+    // 编辑新增地址弹框
     editAddressModal(item) {
       this.userAction = 1;
-      this.checkedItem = item;
+      this.checkedItem = JSON.parse(JSON.stringify(item));
       this.showEditModal = true;
     },
     delAddress(item) {
