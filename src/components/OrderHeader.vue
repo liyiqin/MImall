@@ -9,6 +9,7 @@
         </h2>
       </div>
       <div class="username">
+        <a href="">首页</a>
         <a href="javascript:;">{{username}}</a>
       </div>
     </div>
@@ -55,6 +56,7 @@ export default {
   .username {
     float: right;
     a {
+      margin-right: 20px;
       color: #666666;
       font-size: 16px;
     }

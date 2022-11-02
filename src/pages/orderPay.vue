@@ -1,5 +1,10 @@
 <template>
   <div class="order-pay">
+    <order-header title="订单支付">
+      <template v-slot:tip>
+        <span ref="as">谨防钓鱼链接或诈骗电话,<a href="">了解更多</a></span>
+      </template>
+    </order-header>
     <div class="wrapper">
       <div class="container">
         <div class="order-wrap">
@@ -65,6 +70,7 @@
 import OrderHeader from './../components/OrderHeader';
 import ScanPayCode from './../components/ScanPayCode';
 import Modal from './../components/Modal';
+
 import QRCode from 'qrcode';
 export default {
   name: 'order-pay',
@@ -90,6 +96,7 @@ export default {
   mounted() {
     this.getOrderDetail();
   },
+
   methods: {
     getOrderDetail() {
       this.axios.get(`/orders/${this.orderId}`).then((res) => {

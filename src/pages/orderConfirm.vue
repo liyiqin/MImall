@@ -1,6 +1,10 @@
 <template>
   <div class="order-confirm">
-
+    <order-header title="订单确认">
+      <template v-slot:tip>
+        <span>谨防钓鱼链接或诈骗电话,<a href="">了解更多</a></span>
+      </template>
+    </order-header>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
       style="position: absolute; width: 0px; height: 0px; overflow: hidden;">
       <defs>
@@ -165,6 +169,7 @@
 <script>
 import OrderHeader from './../components/OrderHeader';
 import Modal from './../components/Modal';
+
 export default {
   name: 'order-confirm',
   data() {
