@@ -68,19 +68,21 @@
       </div>
     </div>
     <div class="product-box">
-      <div class="container" v-for="(item,inx) in leiList" :key="inx">
-        <h2>{{item.name}}</h2>
+      <div class="container" v-for="(ite,inx) in leiList" :key="inx">
+        <h2>{{ite.name}}</h2>
         <div class="wrapper">
           <div class="banner-left">
             <a href="/#/product/35"><img v-lazy="'/imgs/mix-alpha.jpg'" alt=""></a>
           </div>
           <div class="list-box">
-            <div class="list" v-for="(arr,i) in phoneList" :key="i">
+            <div class="list" v-for="(arr,i) in ite.phoneList" :key="i">
               <div class="item" v-for="(item,j) in arr" :key="j">
                 <span :class="{'new-pro':j%2==0}">新品</span>
-                <div class="item-img">
-                  <img v-lazy="item.mainImage" alt="">
-                </div>
+                <a :href="item?'/#/product/'+item.id:''">
+                  <div class="item-img">
+                    <img v-lazy="item.mainImage" alt="">
+                  </div>
+                </a>
                 <div class="item-info">
                   <h3>{{item.name}}</h3>
                   <p>{{item.subtitle}}</p>
@@ -213,16 +215,19 @@ export default {
           img: '/imgs/ads/ads-4.jpg',
         },
       ],
-      phoneList: [],
+      //phoneList: [],
       leiList: [
         {
-          name: '手机',
+          name: '手机1',
+          phoneList: '',
         },
         {
-          name: '家电',
+          name: '手机2',
+          phoneList: '',
         },
         {
-          name: '插排',
+          name: '手机3',
+          phoneList: '',
         },
       ],
       showModal: false,
@@ -241,8 +246,16 @@ export default {
           },
         })
         .then((res) => {
-          res.list = res.list.slice(6, 14);
-          this.phoneList = [res.list.slice(0, 4), res.list.slice(4, 8)];
+          //请求只有14条数据
+          res.list = res.list.slice(0, 14);
+          let n = 0;
+          for (let i of this.leiList) {
+            i.phoneList = [
+              res.list.slice(n, n + 4),
+              res.list.slice(n + 4, n + 8),
+            ];
+            n = n + 3;
+          }
         });
     },
     addCart(id) {

@@ -11,6 +11,13 @@ export default {
   data() {
     return {};
   },
+  watch: {
+    $route: function (to, from) {
+      window.scrollTo(0, 0);
+      //document.body.scrollTop = 0;
+      //document.documentElement.scrollTop = 0;
+    },
+  },
   mounted() {
     if (this.$cookie.get('userId')) {
       this.getUser();
